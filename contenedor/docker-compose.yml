@@ -1,0 +1,34 @@
+version: "3.0"
+services:
+
+  app_node:
+    container_name: app_node
+    image: chrisbol99/ec2-user_app_node
+    volumes:
+       - ./php-sample-application-master/:/var/www/php-sample-application-master/
+       - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    ports:
+      - "80:80"
+    tty: true
+    networks:
+      - ansible_net
+    privileged: true
+    depends_on:
+      - "db_node"
+
+  db_node:
+    container_name: db_node
+    image: chrisbol99/ec2-user_db_node
+    environment:
+      MYSQL_ROOT_PASSWORD: samplepass
+      MYSQL_DATABASE: sample
+      MYSQL_USER: sampleuser
+      MYSQL_PASSWORD: samplepass
+    tty: true
+    networks:
+      - ansible_net
+    privileged: true
+
+networks:
+  ansible_net:
+    driver: bridge
